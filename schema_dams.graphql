@@ -1,0 +1,67 @@
+type Doctor {
+  docId: ID!
+  fullName: String!
+  phone: String! @id
+  email: String! @id
+  password: String!
+  # regNumber: String! @id
+  medList: [String!]
+  diagnosticList: [String!]
+  prescriptions: [Prescription!] @hasInverse(field: doctor)
+  patients: [Patient!]
+  appointments: [Visit!]
+}
+
+type Patient {
+  patId: ID!
+  fullName: String! @search(by: [term])
+  password: String!
+  phone: String! @id
+  email: String
+  # passChanged: Int!
+  prescriptions: [Prescription!] @hasInverse(field: patient)
+  doctors: [Doctor!] @hasInverse(field: patients)
+  diagnosis: [Diagnosis!]
+}
+
+type Diagnosis {
+  dId: ID!
+  title: String!
+  comment: String!
+  prescription: Prescription!
+}
+
+type Prescription {
+  presId: ID!
+  date: DateTime! @search(by: [day])
+  time: DateTime! @search
+  diagnosis: Diagnosis! @hasInverse(field: prescription)
+  doctor: Doctor! @hasInverse(field: prescriptions)
+  patient: Patient! @hasInverse(field: prescriptions)
+  medicine: [MedItem!]
+  test: [LabTest!]
+  complain: String
+  history: String
+  # quotable: Int!
+  # bidPharmacyQuotes: [PharmacyQuote!]
+  # confirmedPharmacyQuote: PharmacyQuote
+  # bidLabQuotes: [LabQuote!]
+  # confirmedLabQuote: LabQuote
+}
+
+type MedItem {
+  name: String!
+  mor: Int
+  aft: Int
+  evn: Int
+  days: Int!
+}
+
+type Visit {
+  visId: ID!
+  doctor: Doctor! @hasInverse(field: appointments)
+  phone: String! @search(by: [exact])
+  fullName: String!
+  date: DateTime!
+  qnumber: Int!
+}

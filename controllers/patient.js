@@ -2,6 +2,7 @@ const dgraph = require("./dgraph-graphql");
 const validate = require("./validate");
 const crypto = require("crypto")
 const jwt = require("jsonwebtoken");
+const queries = require("./queries/patient");
 const { getQuotables } = require("./queries/pharmacy");
 const { InsufData, NodeNotFound, InvalidData, InsufParam, parseError } = require("./errors");
 // const queries = require("./queries/patient");
@@ -85,7 +86,7 @@ module.exports = {
       let hashedPass = crypto.createHash("SHA256").update(pass).digest("hex");
       q = dgraph.update("Patient", {filter: {patId: auth.userId}, set: {password: hashedPass, passChanged: 1}}, ["patId", "phone", "fullName"]);
       r = await dgraph.run(q);
-      let loginId = r.updatePatient.patient[0].phone, fullName = r.updatePatient.patient[0].phone;
+      let loginId = r.updatePatient.patient[0].phone, fullName = r.updatePatient.patient[0].fullName;
       // generate session token
       let sessionToken = jwt.sign({"id": auth.userId, "userType": "PAT"}, "secret_key");
       q = dgraph.updateUpsert("Auth", {userId: auth.userId, userType: 1, token: sessionToken}, ["userId", "token"]);
@@ -155,8 +156,17 @@ module.exports = {
   
   async getPrescriptions(req, res){
     let patId = req.user.id;
+    let query = req.query;
     try {
-      let q = dgraph.get("Patient", "patId", patId, ["patId", "fullName", ["prescriptions", "presId", ["doctor", "fullName"], ["diagnosis", "title", "comment"], "date", ["medicine", "name", "mor", "aft", "evn", "days"], ["test", "name", "part"], "complain", "history", "quotable"]]);
+      let q;
+      if(Object.keys(query).length != 0){
+        let qObj = {patId};
+        if(query.date_max && query.date_min) qObj.date = {max: query.date_max, min: query.date_min};
+        if(query.specialization) qObj.specialization = query.specialization;
+        q = queries.filterPrescription2(qObj);
+      } else {
+        q = dgraph.get("Patient", "patId", patId, ["patId", "fullName", ["prescriptions", "presId", ["doctor", "fullName", "specialization"], ["diagnosis", "title", "comment"], "date", ["medicine", "name", "mor", "aft", "evn", "days"], ["test", "name", "part"], "complain", "history", "quotable"]]);
+      }
       let r = await dgraph.run(q);
       res.json(r.getPatient);
     } catch(e){
@@ -181,10 +191,11 @@ module.exports = {
       }
       let q = dgraph.insert("Quotable", quotableDoc, ["quotableId"]);
       let r = await dgraph.run(q);
+      let quotable = r.addQuotable.quotable[0];
       q = dgraph.update("Prescription", {filter: {presId}, set: {quotable: 1}}, ["presId"]);
       r = await dgraph.run(q);
       if(r.updatePrescription.prescription.length < 1) throw new NodeNotFound(presId, "presId");
-      res.json(r.addQuotable.quotable[0]);
+      res.json(quotable);
     } catch(e){
       console.log(e);
       e = parseError(e);

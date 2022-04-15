@@ -1,11 +1,17 @@
+# Specialization Mapping
+# GMD - General Medicine
+# CHS - Child Specialist
+# ENT - Ear, Nose, Throat
+# CAR - CardioLogist
+enum Specialization{GMD, CHS, ENT, CAR}
+
 type Doctor {
   docId: ID!
   fullName: String!
   phone: String! @id
   email: String! @id
   password: String!
-  regNumber: String! @id
-  status: Boolean
+  specialization: Specialization! @search
   medList: [String!]
   diagnosticList: [String!]
   prescriptions: [Prescription!] @hasInverse(field: doctor)

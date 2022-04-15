@@ -19,6 +19,26 @@ module.exports = {
     }`
   },
 
+  allPatients(docId){
+    return `query {
+      getDoctor(docId: "${docId}"){
+        docId
+        patients {
+          patId
+          fullName
+          phone
+          prescriptions (order: {desc: time}, first: 1){
+            date
+            time
+            diagnosis {
+              title
+            }
+          }
+        }
+      }
+    }`
+  },
+
   patientRecords(docId, patId){
     return `query {
       getDoctor(docId: "${docId}"){

@@ -1,12 +1,13 @@
 module.exports = `
+enum Specialization{GMD, CHS, ENT, CAR}
+
 type Doctor {
   docId: ID!
   fullName: String!
   phone: String! @id
   email: String! @id
   password: String!
-  regNumber: String! @id
-  status: Boolean
+  specialization: Specialization! @search
   medList: [String!]
   diagnosticList: [String!]
   prescriptions: [Prescription!] @hasInverse(field: doctor)
@@ -65,7 +66,8 @@ type Lab {
 
 type Prescription {
   presId: ID!
-  date: DateTime! @search
+  specialization: Specialization! @search
+  date: DateTime! @search(by: [hour])
   time: DateTime! @search
   diagnosis: Diagnosis! @hasInverse(field: prescription)
   doctor: Doctor! @hasInverse(field: prescriptions)

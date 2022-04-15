@@ -1,0 +1,4 @@
+node_modules
+*.zip
+setup.js
+test.js

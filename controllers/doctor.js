@@ -18,9 +18,12 @@ const checkDoc = validate({
     type: String,
     required: true
   },
-  regNumber: {
+  specialization: {
     type: String,
-    required: true
+    required: true,
+    validation(val){
+      return val.startsWith("e:");
+    }
   },
   password: {
     type: String,
@@ -128,7 +131,7 @@ module.exports = {
             user: {
               id: doc.docId,
               loginId: doc.phone,
-              name: doc.fullName
+              fullName: doc.fullName
             },
             token
           })
@@ -333,8 +336,8 @@ module.exports = {
     let docId = req.user.id;
     let patName = req.query.name;
     try {
-      if(!patName) throw new InsufQuery("'name' query is missing");
-      let q = queries.searchPatient(docId, patName);
+      // if(!patName) throw new InsufQuery("'name' query is missing");
+      let q = !!patName ? queries.searchPatient(docId, patName) : queries.allPatients(docId);
       let r = await dgraph.run(q);
       let {patients} = r.getDoctor
       res.json(patients)
