@@ -262,7 +262,7 @@ module.exports = {
       } else {
         patId = pat.patId
       }
-      // creates a prescription, will be updated later, if discarded changes to be rolled back manually
+      // creates a prescription, will be updated later, if discarded changes to be rolled back
       let presDoc = {
         date: visitData.date,
         time: new Date( new Date().getTime() ).toISOString(),
@@ -272,6 +272,12 @@ module.exports = {
       q = dgraph.insert("Prescription", presDoc, ["presId"]);
       r = await dgraph.run(q);
       let pres = r.addPrescription.prescription[0];
+      // creates a diagnosis for the prescription
+      q = dgraph.insert("Diagnosis", {title: "No Diagnosis Summary", comment: "No Diagnosis Comment", prescription: {presId: pres.presId}}, ["dId"]);
+      r = await dgraph.run(q);
+      // update the prescription
+      q = dgraph.update("Prescription", {filter: {presId: pres.presId}, set: {diagnosis: {dId: r.addDiagnosis.diagnosis[0].dId}}}, ["presId"]);
+      r = await dgraph.run(q);
       // delete from visit
       q = dgraph.delete("Visit", {visId}, ["visId"]);
       r = await dgraph.run(q)

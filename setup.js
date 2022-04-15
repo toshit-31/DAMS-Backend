@@ -7,7 +7,7 @@ dgraph.updateSchema(schema).then( s => {
   console.log(e)
 });
 
-// let q = dgraph.update("Prescription", {filter: {presId: "0x1adbc"}, set: {quotable: 0}}, ["presId"])
+// let q = dgraph.insert("Diagnosis", {dId: "0xd1d", title: "General Diagnosis", comment: "General Diagnosis"}, ["dId"])
 // dgraph.run(q).then(x => {
 //   console.log(x.updatePrescription.prescription)
 // })
