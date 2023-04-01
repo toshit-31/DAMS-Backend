@@ -273,7 +273,7 @@ module.exports = {
         time: new Date( new Date().getTime() ).toISOString(),
         doctor: {docId},
         patient: {patId},
-        specialization
+        specialization: "e:"+specialization
       }
       q = dgraph.insert("Prescription", presDoc, ["presId"]);
       r = await dgraph.run(q);
