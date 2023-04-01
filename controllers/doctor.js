@@ -238,6 +238,7 @@ module.exports = {
     let {visId} = req.body, docId = req.user.id;
     try{
       if(!visId) throw new InsufData("'visId' field is missing");
+      if(!docId) throw new InsufData("'docId' field is missing");
       // get detail of doc, for specialization
       let q = dgraph.get("Doctor", "docId", docId, ["specialization"])
       let r = await dgraph.run(q)
