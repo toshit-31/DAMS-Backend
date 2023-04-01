@@ -40,13 +40,14 @@ module.exports = {
       }
     }`
   },
+  //${opt.date && opt.date.min && opt.date.max ? `, date: {between: {min: "${opt.date.min}", max: "${opt.date.max}"}}}` : ""}}
   filterPrescription2(opt){
     console.log(opt);
     return `
     query {
       getPatient(patId: "${opt.patId}"){
         patId
-        prescriptions(filter: {${opt.specialization ? `specialization: {eq : ${opt.specialization}}` : ""} ${opt.date && opt.date.min && opt.date.max ? `, date: {between: {min: "${opt.date.min}", max: "${opt.date.max}"}}}` : ""}}){
+        prescriptions(filter: {${opt.specialization ? `specialization: {eq : ${opt.specialization}}` : ""}){
           presId
           specialization
           doctor {
