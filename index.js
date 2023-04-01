@@ -14,8 +14,8 @@ app.use(cors({
 app.use(express.json())
 app.use("/doctor", docRoutes);
 app.use("/patient", patRoutes);
-app.use("/pharmacy", pharRoutes)
-app.use("/lab", labRoutes)
+// app.use("/pharmacy", pharRoutes)
+// app.use("/lab", labRoutes)
 
 app.listen(8000, function(){
   console.log("Server Up @ 8000");
