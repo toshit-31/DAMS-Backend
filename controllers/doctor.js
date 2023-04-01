@@ -238,9 +238,13 @@ module.exports = {
     let {visId} = req.body, docId = req.user.id;
     try{
       if(!visId) throw new InsufData("'visId' field is missing");
+      // get detail of doc, for specialization
+      let q = dgraph.get("Doctor", "docId", docId, ["specialization"])
+      let r = await dgraph.run(q)
+      let specialization = r.getDoctor.specialization
       // get detail of patient from visit node
-      let q = dgraph.get("Visit", "visId", visId, ["visId", "fullName", "date", "phone"])
-      let r = await dgraph.run(q);
+      q = dgraph.get("Visit", "visId", visId, ["visId", "fullName", "date", "phone"])
+      r = await dgraph.run(q);
       let visitData = r.getVisit;
       // check if a patient account already exists if yes retrieve patient id
       q = dgraph.get("Patient", "phone", visitData.phone, ["patId"]);
@@ -267,7 +271,8 @@ module.exports = {
         date: visitData.date,
         time: new Date( new Date().getTime() ).toISOString(),
         doctor: {docId},
-        patient: {patId}
+        patient: {patId},
+        specialization
       }
       q = dgraph.insert("Prescription", presDoc, ["presId"]);
       r = await dgraph.run(q);
