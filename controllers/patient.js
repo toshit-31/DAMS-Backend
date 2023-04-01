@@ -165,7 +165,7 @@ module.exports = {
         if(query.specialization) qObj.specialization = query.specialization;
         q = queries.filterPrescription2(qObj);
       } else {
-        q = dgraph.get("Patient", "patId", patId, ["patId", "fullName", ["prescriptions", "presId", ["doctor", "fullName", "specialization"], ["diagnosis", "title", "comment"], "date", ["medicine", "name", "mor", "aft", "evn", "days"], ["test", "name", "part"], "complain", "history", "quotable"]]);
+        q = dgraph.get("Patient", "patId", patId, ["patId", "fullName", ["prescriptions", "presId", ["doctor", "fullName", "specialization"], ["diagnosis", "title", "comment"], "date", ["medicine", "name", "mor", "aft", "evn", "days"], ["test", "name", "part"], "complain", "history"]]);
       }
       let r = await dgraph.run(q);
       res.json(r.getPatient);
