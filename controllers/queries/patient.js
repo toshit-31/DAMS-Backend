@@ -34,7 +34,6 @@ module.exports = {
               }
               complain
               history
-              quotable
             }
           }
         }
@@ -73,7 +72,6 @@ module.exports = {
           }
           complain
           history
-          quotable
         }
       }
     }`
