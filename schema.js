@@ -32,6 +32,12 @@ type PasswordChange {
   userId: String! @id
 }
 
+type Auth {
+  userId: String! @id
+  userType: Int!
+  token: String!
+}
+
 type Diagnosis {
   dId: ID!
   title: String!
