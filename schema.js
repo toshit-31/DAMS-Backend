@@ -69,18 +69,13 @@ type Prescription {
   specialization: Specialization! @search
   date: DateTime! @search(by: [hour])
   time: DateTime! @search
-  diagnosis: Diagnosis! @hasInverse(field: prescription)
+  diagnosis: Diagnosis @hasInverse(field: prescription)
   doctor: Doctor! @hasInverse(field: prescriptions)
   patient: Patient! @hasInverse(field: prescriptions)
   medicine: [MedItem!]
   test: [LabTest!]
   complain: String
   history: String
-  quotable: Int!
-  bidPharmacyQuotes: [PharmacyQuote!]
-  confirmedPharmacyQuote: PharmacyQuote
-  bidLabQuotes: [LabQuote!]
-  confirmedLabQuote: LabQuote
 }
 
 type LabTest {
@@ -110,78 +105,5 @@ type Auth {
   userId: String! @id
   userType: Int!
   token: String!
-}
-
-type PharmacyBill {
-  name: String!
-  qty: Int!
-  rate: Float!
-  amount: Float!
-}
-
-enum QuotePrepare { PICKUP, HOME }
-enum QuoteType { PHARMACY , LAB }
-enum QuoteStatus { PENDING, CONFIRMED, READY, COMPLETED }
-
-type Quotable {
-  quotableId: ID!
-  prescription: Prescription!
-  patient: Patient!
-  date: DateTime!
-  prepare: QuotePrepare! @search
-  type: [QuoteType!] @search
-  address: String
-  pincode: Int
-}
-
-type PharmacyQuote {
-  pqId: ID!
-  quotable: Quotable!
-  prescription: Prescription! @hasInverse(field: bidPharmacyQuotes)
-  patient: Patient!
-  doctor: Doctor!
-  pharmacy: Pharmacy!
-  date: DateTime!
-  confirmDate: DateTime @search(by: [day])
-  bill: [PharmacyBill!]
-  taxPercent: Float!
-  totalAmount: Float!
-  totalTax: Float!
-  platformCom: Float!
-  doctorCom: Float!
-  netEarning: Float!
-  availIn: String!
-  status: QuoteStatus! @search
-  prepare: QuotePrepare! @search
-  address: String
-  pincode: Int
-}
-
-type LabQuote {
-  lqId: ID!
-  quotable: Quotable!
-  prescription: Prescription! @hasInverse(field: bidLabQuotes)
-  patient: Patient!
-  doctor: Doctor!
-  lab: Lab!
-  test: [LabTest!]
-  date: DateTime! @search
-  testDate: DateTime @search(by: [hour])
-  amount: Float!
-  taxPercent: Float!
-  totalTax: Float!
-  platformCom: Float!
-  doctorCom: Float!
-  netEarning: Float!
-  status: QuoteStatus! @search
-}
-
-type InvItem {
-  itemId: ID!
-  pharmacy: Pharmacy!
-  name: String! @search(by: [exact])
-  inStock: Int!
-  rate: Float!
-  qty: String!
 }
 `
