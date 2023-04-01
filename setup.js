@@ -4,5 +4,6 @@ const schema = require("./schema.js")
 dgraph.updateSchema(schema).then((res) =>{
   console.log(res)
 }).catch((err)=>{
-  console.err(err)
+  console.log("error")
+  console.log(err)
 })
