@@ -39,35 +39,10 @@ type Diagnosis {
   prescription: Prescription!
 }
 
-type Pharmacy {
-  pharmaId: ID!
-  fullName: String! @search(by: [term])
-  password: String!
-  phone: String! @id
-  email: String
-  address: String!
-  pincode: Int!
-  inventory: [InvItem!] @hasInverse(field: pharmacy)
-  bidsMade: [PharmacyQuote!]
-  bidsConfirmed: [PharmacyQuote!]
-}
-
-type Lab {
-  labId: ID!
-  fullName: String! @search(by: [term])
-  password: String!
-  phone: String! @id
-  email: String
-  address: String!
-  pincode: Int!
-  bidsMade: [LabQuote!]
-  bidsConfirmed: [LabQuote!]
-}
-
 type Prescription {
   presId: ID!
   specialization: Specialization! @search
-  date: DateTime! @search(by: [hour])
+  date: DateTime! @search(by: [day])
   time: DateTime! @search
   diagnosis: Diagnosis @hasInverse(field: prescription)
   doctor: Doctor! @hasInverse(field: prescriptions)
@@ -99,11 +74,5 @@ type Visit {
   fullName: String!
   date: DateTime!
   qnumber: Int!
-}
-
-type Auth {
-  userId: String! @id
-  userType: Int!
-  token: String!
 }
 `
