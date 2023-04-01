@@ -302,7 +302,6 @@ module.exports = {
   async assignPrescription(req, res){
     try{
       let prescriptionData = checkPrescription(req.body);
-      prescriptionData.quotable = 0;
       let {presId} = prescriptionData;
       delete prescriptionData.presId;
 
